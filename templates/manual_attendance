@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Marquage Manuel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Marquage Manuel</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    <form method="POST">
+        <label for="student_id">Étudiant :</label>
+        <select name="student_id" id="student_id" required>
+            {% for student in students %}
+                <option value="{{ student.id }}" {% if student.id == student_id %}selected{% endif %}>{{ student.name }}</option>
+            {% endfor %}
+        </select><br>
+        <label>Statut :</label>
+        <input type="radio" name="status" value="present" required> Présent
+        <input type="radio" name="status" value="absent"> Absent<br>
+        <button type="submit">Enregistrer</button>
+    </form>
+    <a href="{{ url_for('teacher_dashboard') }}">Retour</a>
+</body>
+</html>

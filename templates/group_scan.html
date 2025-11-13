@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scanner le Groupe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+            background: linear-gradient(rgba(30, 126, 52, 0.3), rgba(30, 126, 52, 0.3)), url('https://images.unsplash.com/photo-1705314914898-130fa5fa2e70?q=80&w=1421&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .navbar a {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #e0f7fa;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1500px; /* Élargi de 1400px à 1500px */
+            margin: 80px auto 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px; /* Augmenté pour un meilleur équilibre avec la nouvelle largeur */
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 2px solid #28a745;
+            transition: transform 0.3s ease;
+            width: 90%; /* S'assurer qu'il occupe presque toute la largeur disponible */
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h2, h3 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .student-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .student-item {
+            background: #f9f9f9;
+            border-left: 6px solid #28a745;
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+        }
+
+        .student-item:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .student-item img {
+            width: 90px;
+            height: 90px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 25px;
+            border: 2px solid #1e7e34;
+        }
+
+        .student-item .student-info {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .student-item span {
+            font-size: 18px;
+            font-weight: 500;
+            color: #2c3e50;
+            margin-right: 20px;
+        }
+
+        .student-item button {
+            padding: 10px 25px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 20px;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .student-item button:hover {
+            background-color: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-feed {
+            border: 2px solid #1e7e34;
+            border-radius: 10px;
+            margin-top: 25px;
+            overflow: hidden;
+            display: none;
+            max-width: 1100px; /* Élargi de 1000px à 1100px pour correspondre au conteneur */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #video-feed {
+            width: 100%;
+            height: auto;
+        }
+
+        #countdown {
+            font-size: 20px;
+            color: #e74c3c;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 16px;
+            max-width: 1100px; /* Élargi de 1000px à 1100px */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #manual-presence-btn {
+            margin-top: 15px;
+            padding: 12px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            margin-left: auto;
+            margin-right: auto;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        #manual-presence-btn:hover {
+            background-color: #1e7e34;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">AbsenceAI <i class="fas fa-user-shield"></i></div>
+        <div style="display: flex; gap: 30px; margin-left: auto;">
+            <a href="{{ url_for('professor_dashboard') }}">Home</a>
+            <a href="{{ url_for('login') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>{{ class_item.name }} - {{ class_item.subject }}</h2>
+        <h3>Étudiants à Scanner ({{ students|length }})</h3>
+
+        <div class="student-list">
+            {% for student in students %}
+                <div class="student-item">
+                    {% if student.image %}
+                        <img src="http://127.0.0.1:8090/api/files/etudiants/{{ student.id }}/{{ student.image }}" alt="{{ student.name }}" onerror="this.src='https://via.placeholder.com/80';">
+                    {% else %}
+                        <img src="https://via.placeholder.com/80" alt="{{ student.name }}">
+                    {% endif %}
+                    <div class="student-info">
+                        <span>{{ student.name }}</span>
+                    </div>
+                    <button onclick="startScan('{{ student.id }}', '{{ student.name }}')">Scanner</button>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="video-feed" id="video-feed-container">
+            <img id="video-feed" />
+        </div>
+
+        <div id="countdown"></div>
+        <div id="result"></div>
+        <button id="manual-presence-btn" onclick="markPresentManually()">Valider Présence</button>
+    </div>
+
+    <div class="footer">
+        <p>© 2025 AbsenceAI - Tous droits réservés</p>
+    </div>
+
+    <script>
+        let videoFeedActive = false;
+        let countdownInterval;
+        let currentStudentId = null;
+
+        function startCountdown(seconds, callback) {
+            const countdownDiv = document.getElementById('countdown');
+            let timeLeft = seconds;
+            countdownDiv.innerHTML = `Préparez-vous, scan dans ${timeLeft} secondes...`;
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                countdownDiv.innerHTML = `Préparez-vous, scan dans ${timeLeft} secondes...`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    countdownDiv.innerHTML = '';
+                    callback();
+                }
+            }, 1000);
+        }
+
+        function markPresentManually() {
+            const classId = '{{ class_item.id }}';
+            const resultDiv = document.getElementById('result');
+            const manualPresenceBtn = document.getElementById('manual-presence-btn');
+
+            fetch(`/manual_attendance/${classId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: `student_id=${currentStudentId}&status=true`
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    resultDiv.innerHTML = data.message;
+                    manualPresenceBtn.style.display = 'none';
+                } else {
+                    resultDiv.innerHTML = data.error || 'Erreur lors de la validation manuelle.';
+                }
+            })
+            .catch(error => {
+                resultDiv.innerHTML = 'Erreur lors de la validation manuelle.';
+                console.error('Erreur:', error);
+            });
+        }
+
+        function startScan(studentId, studentName) {
+            currentStudentId = studentId;
+            const classId = '{{ class_item.id }}';
+            const resultDiv = document.getElementById('result');
+            const videoFeed = document.getElementById('video-feed');
+            const videoContainer = document.getElementById('video-feed-container');
+            const manualPresenceBtn = document.getElementById('manual-presence-btn');
+
+            if (countdownInterval) clearInterval(countdownInterval);
+            if (window.eventSource) window.eventSource.close();
+
+            if (videoFeedActive) {
+                videoFeed.src = '';
+                videoContainer.style.display = 'none';
+                videoFeedActive = false;
+            }
+
+            manualPresenceBtn.style.display = 'none';
+            videoContainer.style.display = 'block';
+            const timestamp = new Date().getTime();
+            videoFeed.src = "{{ url_for('video_feed') }}?t=" + timestamp;
+            videoFeedActive = true;
+            resultDiv.innerHTML = 'Scan en cours pour ' + studentName + '...';
+
+            startCountdown(10, () => {
+                window.eventSource = new EventSource(`/recognition_feed/${classId}/${studentId}`);
+
+                window.eventSource.onmessage = function(event) {
+                    resultDiv.innerHTML = event.data;
+                    window.eventSource.close();
+                    videoFeed.src = '';
+                    videoContainer.style.display = 'none';
+                    videoFeedActive = false;
+
+                    if (event.data.includes('est absent(e)') || event.data.includes('aucun visage détecté')) {
+                        manualPresenceBtn.style.display = 'block';
+                    }
+                };
+
+                window.eventSource.onerror = function() {
+                    resultDiv.innerHTML = 'Erreur lors du scan.';
+                    window.eventSource.close();
+                    videoFeed.src = '';
+                    videoContainer.style.display = 'none';
+                    videoFeedActive = false;
+                    manualPresenceBtn.style.display = 'block';
+                };
+            });
+        }
+
+        // Forcer le défilement vers le haut au chargement
+        window.onload = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+    </script>
+</body>
+</html>

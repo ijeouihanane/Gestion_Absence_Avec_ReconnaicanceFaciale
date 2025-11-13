@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Professeur</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Dashboard Professeur</h1>
+    <h2>{{ class_name }}</h2>
+    <h3>Étudiants</h3>
+    <ul>
+        {% for student in students %}
+            <li>{{ student.name }}</li>
+        {% endfor %}
+    </ul>
+    <form method="POST" enctype="multipart/form-data" action="{{ url_for('scan') }}">
+        <input type="file" name="uploaded_image">
+        <button type="submit">Vérifier Présence</button>
+    </form>
+    <form method="POST" action="{{ url_for('scan') }}">
+        <button type="submit" name="camera_scan">Scanner avec Caméra</button>
+    </form>
+    <a href="{{ url_for('manual_attendance') }}">Marquer Manuellement</a>
+    <h3>Historique des Absences</h3>
+    <table border="1">
+        <tr>
+            <th>Étudiant ID</th>
+            <th>Date</th>
+            <th>Présent</th>
+            <th>Action</th>
+        </tr>
+        {% for attendance in attendances %}
+            <tr>
+                <td>{{ attendance.etudiantId }}</td>
+                <td>{{ attendance.date }}</td>
+                <td>{{ 'Non' if not attendance.present else 'Oui' }}</td>
+                <td><a href="{{ url_for('delete_attendance', attendance_id=attendance.id) }}">Supprimer</a></td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Déconnexion</a>
+</body>
+</html>

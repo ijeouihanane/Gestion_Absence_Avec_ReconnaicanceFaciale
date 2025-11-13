@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard Étudiant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Dashboard Étudiant</h1>
+    <h2>Mes Absences</h2>
+    <table border="1">
+        <tr>
+            <th>Date</th>
+            <th>Matière</th>
+        </tr>
+        {% for attendance in attendances %}
+            {% if not attendance.present %}
+                <tr>
+                    <td>{{ attendance.date }}</td>
+                    <td>Mathématiques</td> <!-- À ajuster avec la matière réelle via class_id -->
+                </tr>
+            {% endif %}
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('index') }}">Déconnexion</a>
+</body>
+</html>

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord Étudiant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            color: #333;
+            background: linear-gradient(rgba(30, 126, 52, 0.3), rgba(30, 126, 52, 0.3)), url('https://images.unsplash.com/photo-1705314914898-130fa5fa2e70?q=80&w=1421&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            overflow-y: auto;
+        }
+
+        .navbar {
+            background-color: #28a745;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .navbar .logo {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            animation: fadeIn 1s ease-in;
+        }
+
+        .navbar a {
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #e0f7fa;
+            text-decoration: underline;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .container {
+            flex: 1;
+            max-width: 1500px;
+            margin: 80px auto 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 50px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            backdrop-filter: blur(5px);
+            border: 2px solid #28a745;
+            transition: transform 0.3s ease;
+            width: 90%;
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        h2 {
+            color: #28a745;
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            animation: slideIn 1s ease-out;
+        }
+
+        h3 {
+            color: #28a745;
+            text-align: left;
+            margin-bottom: 10px;
+            font-weight: 600;
+            animation: slideIn 1s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        p {
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        a {
+            color: #28a745;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #1e7e34;
+            text-decoration: underline;
+        }
+
+        .error {
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            color: #2c3e50;
+        }
+
+        th {
+            background-color: #f9f9f9;
+            border-bottom: 2px solid #28a745;
+        }
+
+        td {
+            border-bottom: 1px solid #ddd;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .status.present {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .status.absent {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .bg-gray-50 {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            font-size: 12px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">AbsenceAI <i class="fas fa-user-shield"></i></div>
+        <div style="display: flex; gap: 30px; margin-left: auto;">
+            <a href="{{ url_for('student_dashboard') }}">Home</a>
+            <a href="{{ url_for('login') }}">Logout</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>Bienvenue, {{ student.name }}</h2>
+       
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% else %}
+            <div class="mb-6">
+                <h3>Informations</h3>
+                <p>Classe : {{ class_item.name }} - {{ class_item.subject }}</p>
+            </div>
+
+            <div>
+                <h3>Historique de Présence</h3>
+                {% if presences %}
+                    <div class="bg-gray-50">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Matière</th>
+                                    <th>Statut</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for presence in presences %}
+                                    <tr>
+                                        <td>{{ presence.date }}</td>
+                                        <td>{{ presence.subject or 'Inconnu' }}</td>
+                                        <td>
+                                            <span class="status {{ 'present' if presence.present else 'absent' }}">
+                                                {{ 'Présent' if presence.present else 'Absent' }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-gray-600">Aucune présence enregistrée.</p>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="footer">
+        <p>© 2025 AbsenceAI - Tous droits réservés</p>
+    </div>
+
+    <script>
+        // Forcer le défilement vers le haut au chargement
+        window.onload = function() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        };
+    </script>
+</body>
+</html>

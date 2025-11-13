@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tableau de Bord - Professeur</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      color: #333;
+      background: linear-gradient(rgba(30, 126, 52, 0.3), rgba(30, 126, 52, 0.3)), url('https://images.unsplash.com/photo-1705314914898-130fa5fa2e70?q=80&w=1421&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      overflow-y: auto;
+    }
+
+    .navbar {
+      background-color: #28a745;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .navbar .logo {
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      animation: fadeIn 1s ease-in;
+    }
+
+    .navbar a {
+      color: white;
+      font-weight: 600;
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+
+    .navbar a:hover {
+      color: #e0f7fa;
+      text-decoration: underline;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    main {
+      flex: 1;
+      padding: 80px 20px 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Ajusté pour éviter le collage */
+      gap: 30px; /* Espacement constant entre les cartes */
+      justify-items: center;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      backdrop-filter: blur(5px);
+      border-left: 5px solid #28a745;
+      transition: box-shadow 0.3s ease, background 0.3s ease;
+      width: 100%;
+      max-width: 350px; /* Limite la largeur pour un espacement naturel */
+    }
+
+    .card:hover {
+      background: rgba(255, 255, 255, 1);
+      box-shadow: 0 10px 20px rgba(0, 128, 0, 0.3);
+    }
+
+    h2 {
+      color: #28a745;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 10px;
+      animation: slideIn 1s ease-out;
+    }
+
+    p {
+      color: #2c3e50;
+      font-size: 16px;
+      margin-bottom: 20px;
+      animation: fadeIn 1.5s ease-in;
+    }
+
+    a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #28a745;
+      color: white;
+      font-weight: 500;
+      border-radius: 10px;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    a:hover {
+      background-color: #1e7e34;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    @keyframes slideIn {
+      from { transform: translateY(-20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .error {
+      color: #e74c3c;
+      font-weight: 500;
+      margin-bottom: 20px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #28a745;
+      color: white;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-gray-800">
+  <nav class="navbar">
+    <div class="logo">AbsenceAI <i class="fas fa-user-shield"></i></div>
+    <div style="display: flex; gap: 30px; margin-left: auto;">
+      <a href="{{ url_for('login') }}" class="logout-link">Logout</a>
+    </div>
+  </nav>
+
+  <main class="pt-28 px-4 w-full max-w-6xl mx-auto">
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    {% if not classes_with_students %}
+      <p class="text-white text-lg font-medium text-center">Aucune classe trouvée.</p>
+    {% else %}
+      <div class="grid">
+        {% for item in classes_with_students %}
+          <div class="card">
+            <h2>{{ item.class.name }}</h2>
+            <p class="italic">{{ item.class.subject }}</p>
+            <a href="{{ url_for('group_scan', class_id=item.class.id) }}">
+              Scanner le Groupe
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </main>
+
+  <div class="footer">
+    <p>© 2025 AbsenceAI - Tous droits réservés</p>
+  </div>
+</body>
+</html>

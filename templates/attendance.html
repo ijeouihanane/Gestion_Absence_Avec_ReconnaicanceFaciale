@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Présences</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <h1>Gestion des Présences</h1>
+    <table border="1">
+        <tr>
+            <th>ID Étudiant</th>
+            <th>Date</th>
+            <th>Présent</th>
+        </tr>
+        {% for attendance in attendances %}
+            <tr>
+                <td>{{ attendance.etudiantId }}</td>
+                <td>{{ attendance.date }}</td>
+                <td>{{ 'Oui' if attendance.present else 'Non' }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <a href="{{ url_for('scan') }}">Retour au Scan</a>
+</body>
+</html>

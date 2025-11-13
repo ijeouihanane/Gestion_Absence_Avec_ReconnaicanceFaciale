@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan avec Caméra</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 2px solid black;
+        }
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scan avec Caméra</h1>
+    <img src="{{ url_for('video_feed') }}" id="video">
+    <div id="result"></div>
+    <script>
+        const resultDiv = document.getElementById('result');
+        const eventSource = new EventSource('/recognition_feed');
+        eventSource.onmessage = function(event) {
+            resultDiv.innerText = event.data;
+            if (event.data.includes("Présent")) {
+                eventSource.close();
+            }
+        };
+        eventSource.onerror = function() {
+            resultDiv.innerText = 'Erreur de connexion au flux de reconnaissance';
+            eventSource.close();
+        };
+    </script>
+</body>
+</html>

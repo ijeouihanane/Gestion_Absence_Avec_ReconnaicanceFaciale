@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scan Facial</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        #video {
+            width: 640px;
+            height: 480px;
+            border: 2px solid black;
+        }
+        #result {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Scan Facial</h1>
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    {% if message %}
+        <p style="color: green;">{{ message }}</p>
+    {% endif %}
+
+    <!-- Formulaire pour importer une image -->
+    <form method="POST" enctype="multipart/form-data">
+        <label for="uploaded_image">Importer une image :</label>
+        <input type="file" name="uploaded_image" accept="image/*" required>
+        <button type="submit">Vérifier Présence</button>
+    </form>
+
+    <!-- Bouton pour scanner avec la caméra -->
+    <form method="POST" action="{{ url_for('scan') }}">
+        <button type="submit" name="camera_scan">Scanner avec la Caméra</button>
+    </form>
+
+    <!-- Section pour le flux vidéo -->
+    <div id="camera-section" style="display: none;">
+        <h2>Scan avec la Caméra</h2>
+        <img src="{{ url_for('video_feed') }}" id="video">
+        <div id="result"></div>
+    </div>
+
+    <h2>Sujets</h2>
+    <ul>
+        {% for subject in subjects %}
+            <li>{{ subject.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <script>
+        // Afficher la section de la caméra quand le bouton est cliqué
+        document.querySelector('button[name="camera_scan"]').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('camera-section').style.display = 'block';
+            const resultDiv = document.getElementById('result');
+            const eventSource = new EventSource('/recognition_feed');
+            eventSource.onmessage = function(event) {
+                resultDiv.innerText = event.data;
+                if (event.data.includes("Présent")) {
+                    eventSource.close();
+                }
+            };
+            eventSource.onerror = function() {
+                resultDiv.innerText = 'Erreur de connexion au flux de reconnaissance';
+                eventSource.close();
+            };
+        });
+    </script>
+</body>
+</html>
